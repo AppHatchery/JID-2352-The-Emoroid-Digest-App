@@ -38,7 +38,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
-
+    namespace 'com.emory.theEmoroidDigestApp'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -57,8 +57,10 @@ android {
         applicationId "com.emory.theEmoroidDigestApp"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        compileSdkVersion 34
+        ndkVersion "26.1.10909125"
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -77,10 +79,10 @@ android {
             signingConfig signingConfigs.release
         }
     }
-                                                                                                    
-    defaultConfig {                                                                                               
-        minSdkVersion 19                                                                                            
-    }                                                                                                             
+
+    defaultConfig {
+        minSdkVersion 19
+    }
 }
 
 flutter {
