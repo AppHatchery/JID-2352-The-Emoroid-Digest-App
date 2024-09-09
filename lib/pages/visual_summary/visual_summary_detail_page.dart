@@ -31,10 +31,12 @@ class VisualSummaryDetailPage extends StatefulWidget {
   State<VisualSummaryDetailPage> createState() => _VisualSummaryDetailPageState();
 }
 
-class _VisualSummaryDetailPageState extends State<VisualSummaryDetailPage> with LocalFileSystem {
+class _VisualSummaryDetailPageState extends State<VisualSummaryDetailPage> {
   final double iconSize = 30;
   final double fieldFontSize = 16;
   var _isLoading = false;
+
+  final LocalFileSystem localFileSystem = LocalFileSystem();
 
   Future<void> downloadVisualSummary(VisualSummary visualSummary) async {
     setState(() {
@@ -43,9 +45,9 @@ class _VisualSummaryDetailPageState extends State<VisualSummaryDetailPage> with 
 
     try {
       await Dio()
-          .download(visualSummary.linkVisualSummarySource!, getFilePath(visualSummary.linkVisualSummaryStorage!));
+          .download(visualSummary.linkVisualSummarySource!, localFileSystem.getFilePath(visualSummary.linkVisualSummaryStorage!));
       await Dio().download(visualSummary.linkVisualSummaryThumbnailSource!,
-          getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!));
+         localFileSystem.getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!));
       setState(() {
         visualSummary.isDownloaded = true;
       });
@@ -73,8 +75,8 @@ class _VisualSummaryDetailPageState extends State<VisualSummaryDetailPage> with 
     });
     IsarService.instance.saveVisualSummary(visualSummary);
     List<File> filesToDelete = [];
-    filesToDelete.add(File(getFilePath(visualSummary.linkVisualSummaryStorage!)));
-    filesToDelete.add(File(getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!)));
+    filesToDelete.add(File(localFileSystem.getFilePath(visualSummary.linkVisualSummaryStorage!)));
+    filesToDelete.add(File(localFileSystem.getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!)));
     //Keep loop here in case we want to delete multiple things in the future when we delete a summary
     for (var i = 0; i < filesToDelete.length; i++) {
       try {
@@ -181,7 +183,7 @@ class _VisualSummaryDetailPageState extends State<VisualSummaryDetailPage> with 
       return Center(child: Text("Unknown visual summary ID: ${args.visualSummaryID}"));
     }
 
-    File localVisualSummaryThumbnail = File(getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!));
+    File localVisualSummaryThumbnail = File(localFileSystem.getFilePath(visualSummary.linkVisualSummaryThumbnailStorage!));
 
     FirebaseAnalytics.instance.logEvent(
       name: 'visual_summary_view',

@@ -88,11 +88,10 @@ Future<void> backgroundHandler(RemoteMessage message) async {
   });
 }
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
-    name: "Emroid-Digest-App",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 

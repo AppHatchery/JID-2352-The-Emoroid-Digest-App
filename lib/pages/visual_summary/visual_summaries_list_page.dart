@@ -31,8 +31,8 @@ class _VisualSummaryListPageState extends State<VisualSummaryListPage> {
   String? selectedGISocietyJournal;
   String? selectedYearGuidelinePublished;
   Set<String> selectedKeywords = {};
-  late StreamSubscription<ConnectivityResult> subscription;
-  ConnectivityResult connectivityStatus = ConnectivityResult.none;
+  late StreamSubscription<List<ConnectivityResult>> subscription;
+  List<ConnectivityResult> connectivityStatus = [ConnectivityResult.none];
 
   @override
   void initState() {
@@ -45,13 +45,13 @@ class _VisualSummaryListPageState extends State<VisualSummaryListPage> {
       setState(() {
         connectivityStatus = connectivity;
       });
-      subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
         setState(() {
           connectivityStatus = result;
         });
       });
       
-      if (connectivityStatus != ConnectivityResult.none) {
+      if (!connectivityStatus.contains(ConnectivityResult.none)) {
         await syncVisualSummariesFromFirestore();
       }
       
@@ -71,7 +71,7 @@ class _VisualSummaryListPageState extends State<VisualSummaryListPage> {
   Future<List<VisualSummary>> _getFilteredVisualSummaries() async {
     List<VisualSummary> sourceList;
     List<VisualSummary> toRender = [];
-    if (connectivityStatus == ConnectivityResult.none) {
+    if (connectivityStatus.contains(ConnectivityResult.none)) {
       sourceList = await IsarService.instance.getDownloadedVisualSummaries();
     } else {
       sourceList = await IsarService.instance.getVisualSummariesWithThumbnail();
@@ -133,7 +133,7 @@ class _VisualSummaryListPageState extends State<VisualSummaryListPage> {
     return RefreshIndicator(
       onRefresh: () async {
         final connectivityResult = await (Connectivity().checkConnectivity());
-        if (connectivityResult != ConnectivityResult.none) {
+        if (!connectivityResult.contains(ConnectivityResult.none)) {
           await syncVisualSummariesFromFirestore();
         }
         setState(() {
@@ -458,7 +458,7 @@ class _VisualSummaryListPageState extends State<VisualSummaryListPage> {
                     } else {
                       if (future.data!.isEmpty) {
                         String errorText;
-                        if (connectivityStatus == ConnectivityResult.none) {
+                        if (connectivityStatus.contains(ConnectivityResult.none)) {
                           errorText =
                               "No internet connection! Please download some visual summaries to have them available offline!\nOr, update your filters!";
                         } else {

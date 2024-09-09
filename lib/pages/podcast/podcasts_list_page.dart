@@ -31,8 +31,8 @@ class _PodcastListPageState extends State<PodcastListPage> {
   String? selectedGISocietyJournal;
   String? selectedYearGuidelinePublished;
   Set<String> selectedKeywords = {};
-  late StreamSubscription<ConnectivityResult> subscription;
-  ConnectivityResult connectivityStatus = ConnectivityResult.none;
+  late StreamSubscription<List<ConnectivityResult>> subscription;
+  List<ConnectivityResult> connectivityStatus = [ConnectivityResult.none];
 
   @override
   void initState() {
@@ -45,12 +45,12 @@ class _PodcastListPageState extends State<PodcastListPage> {
       setState(() {
         connectivityStatus = connectivity;
       });
-      subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
         setState(() {
           connectivityStatus = result;
         });
       });
-      if (connectivityStatus != ConnectivityResult.none) {
+      if (!connectivityStatus.contains(ConnectivityResult.none)) {
         await syncPodcastsFromFirestore();
       }
       setState(() {
@@ -448,7 +448,7 @@ class _PodcastListPageState extends State<PodcastListPage> {
                       return const Center(child: CircularProgressIndicator());
                     } else {
                       if (future.data!.isEmpty) {
-                        if (connectivityStatus != ConnectivityResult.none) {
+                        if (!connectivityStatus.contains(ConnectivityResult.none)) {
                           return SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Column(

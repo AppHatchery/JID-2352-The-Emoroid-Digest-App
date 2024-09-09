@@ -6,6 +6,7 @@ import 'package:emoroid_digest_app/models/podcast.dart';
 import 'package:emoroid_digest_app/models/message.dart';
 import 'package:emoroid_digest_app/models/visual_summary.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class IsarService {
   // static final IsarService _instance = IsarService._internal();
@@ -267,10 +268,12 @@ class IsarService {
   }
 
   static Future<Isar> _openDB() async {
+    final dir = await getApplicationDocumentsDirectory();
     if (Isar.instanceNames.isEmpty) {
       return await Isar.open(
         [VisualSummarySchema, PodcastSchema, LastUpdateSchema, MessageSchema],
         inspector: true,
+        directory: dir.path
       );
     }
     return Future.value(Isar.getInstance());

@@ -9,9 +9,10 @@ class VisualSummaryPDFPageArguments {
   VisualSummaryPDFPageArguments();
 }
 
-class VisualSummaryPDFPage extends StatelessWidget with LocalFileSystem {
-  const VisualSummaryPDFPage({super.key, required this.visualSummaryID});
+class VisualSummaryPDFPage extends StatelessWidget {
+  VisualSummaryPDFPage({super.key, required this.visualSummaryID});
   final String visualSummaryID;
+  final LocalFileSystem localFileSystem = LocalFileSystem();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class VisualSummaryPDFPage extends StatelessWidget with LocalFileSystem {
     if (visualSummary == null) {
       return Text("Unknown visual summary ID: $visualSummaryID");
     }
-    File localVisualSummary = File(getFilePath(visualSummary.linkVisualSummaryStorage!));
+    File localVisualSummary = File(localFileSystem.getFilePath(visualSummary.linkVisualSummaryStorage!));
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +39,7 @@ class VisualSummaryPDFPage extends StatelessWidget with LocalFileSystem {
                 return SfPdfViewer.network(
                   visualSummary.linkVisualSummarySource!,
                   onDocumentLoadFailed: (details) async {
-                    if (await (Connectivity().checkConnectivity()) == ConnectivityResult.none) {
+                    if (await (Connectivity().checkConnectivity()).then((value)=> value.contains(ConnectivityResult.none)) ) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

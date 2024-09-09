@@ -30,7 +30,7 @@ class PodcastDetailPage extends StatefulWidget {
   State<PodcastDetailPage> createState() => _PodcastDetailPageState();
 }
 
-class _PodcastDetailPageState extends State<PodcastDetailPage> with LocalFileSystem {
+class _PodcastDetailPageState extends State<PodcastDetailPage> {
   final double iconSize = 25;
   final double fieldFontSize = 16;
   PageManager? _pageManager;

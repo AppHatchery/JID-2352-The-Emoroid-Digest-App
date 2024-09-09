@@ -7,17 +7,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as ImageConvert;
 
-class VisualSummaryThumbnail extends StatelessWidget with LocalFileSystem {
-  const VisualSummaryThumbnail({
+class VisualSummaryThumbnail extends StatelessWidget  {
+  VisualSummaryThumbnail({
     Key? key,
     required this.visualSummary,
   }) : super(key: key);
 
   final VisualSummary visualSummary;
+  final LocalFileSystem localFileSystem = LocalFileSystem();
 
   Future<bool> downloadAndCompressThumbnail() async {
     String localThumbnailPath =
-        getVisualSummaryThumbnailCompressedPath(visualSummary.linkVisualSummaryThumbnailStorage!);
+       localFileSystem.getVisualSummaryThumbnailCompressedPath(visualSummary.linkVisualSummaryThumbnailStorage!);
     localThumbnailPath = localThumbnailPath.replaceAll(".png", ".jpg");
     var mimeType = ".${localThumbnailPath.split('.').last}";
     if (mimeType == ".pdf") {
@@ -26,7 +27,7 @@ class VisualSummaryThumbnail extends StatelessWidget with LocalFileSystem {
     if (await File(localThumbnailPath).exists()) {
       return true;
     }
-    var tempPath = await getTempFilePath(visualSummary.linkVisualSummaryThumbnailStorage!);
+    var tempPath = await localFileSystem.getTempFilePath(visualSummary.linkVisualSummaryThumbnailStorage!);
 
     if (!await File(tempPath).parent.exists()) {
       File(tempPath).parent.create();
@@ -60,7 +61,7 @@ class VisualSummaryThumbnail extends StatelessWidget with LocalFileSystem {
   @override
   Widget build(BuildContext context) {
     final localThumbnail = File(
-        getVisualSummaryThumbnailCompressedPath(visualSummary.linkVisualSummaryThumbnailStorage!)
+       localFileSystem.getVisualSummaryThumbnailCompressedPath(visualSummary.linkVisualSummaryThumbnailStorage!)
             .replaceAll(".png", ".jpg"));
     return FutureBuilder(
         future: downloadAndCompressThumbnail(),

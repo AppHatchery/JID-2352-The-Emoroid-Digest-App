@@ -42,6 +42,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -57,7 +59,7 @@ android {
         applicationId "com.emory.theEmoroidDigestApp"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23
         compileSdkVersion 34
         ndkVersion "26.1.10909125"
         targetSdkVersion 34
@@ -79,9 +81,8 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
-    defaultConfig {
-        minSdkVersion 19
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -91,4 +92,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.window:window:1.0.0'
+    implementation 'androidx.window:window-java:1.0.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }
